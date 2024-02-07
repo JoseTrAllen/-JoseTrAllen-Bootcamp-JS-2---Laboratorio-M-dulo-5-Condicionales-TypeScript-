@@ -4,7 +4,6 @@ const mostrarFotoCarta = document.getElementById("imagen-carta");
 const mensajeAlJugador = document.getElementById("mensaje-al-jugador");
 const idPuntuacion = document.getElementById("puntuacion");
 
-
 const cartaTrasera: string = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg";
 const asDeCopas: string = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/1_as-copas.jpg";
 const dosDeCopas: string = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/2_dos-copas.jpg";
@@ -22,10 +21,10 @@ function generarNumero () {
 }
 
 function obtenerNumero (numeroAleatorio: number) {
-  numeroAleatorio >7 ? numeroAleatorio +=2 :
-  numeroAleatorio === 0 ? numeroAleatorio++ :
-  numeroAleatorio;
-  return numeroAleatorio;
+  if (numeroAleatorio === 0) {
+    return 1;
+  }
+  return numeroAleatorio > 7 ? numeroAleatorio += 2 : numeroAleatorio;
 }
 
 function pintaCarta (numeroCarta: number) {
@@ -57,10 +56,10 @@ function pintaCarta (numeroCarta: number) {
 
 function muestraCarta (urlCarta: string) {
   if (mostrarFotoCarta !== undefined && 
-      mostrarFotoCarta !== null &&
-      mostrarFotoCarta instanceof HTMLImageElement) {
-        mostrarFotoCarta.src = urlCarta;
-      }
+    mostrarFotoCarta !== null &&
+    mostrarFotoCarta instanceof HTMLImageElement) {
+      mostrarFotoCarta.src = urlCarta;
+    }
 }
 
 function obtenerPuntosCarta (puntosCarta: number) {
@@ -72,108 +71,130 @@ function obtenerPuntosCarta (puntosCarta: number) {
 }
 
 function sumarPuntuacion (suma: number) {
-  return puntos += suma;
+  return puntos + suma;
+}
+
+function setPuntos (nuevosPuntos: number) {
+  return puntos = nuevosPuntos;
 }
 
 function mostrarPuntuacion () {
   if (idPuntuacion !== undefined && 
-      idPuntuacion !== null &&
-      idPuntuacion instanceof HTMLHeadingElement) {
+    idPuntuacion !== null &&
+    idPuntuacion instanceof HTMLHeadingElement) {
       idPuntuacion.innerHTML = puntos.toString();
     }
 }
 
-function ganarPartida () {
+function gestionarFinalPartida () {
   if (puntos === 7.5) {
-    if (mensajeAlJugador !== undefined && 
-      mensajeAlJugador !== null &&
-      mensajeAlJugador instanceof HTMLParagraphElement) {
-      mensajeAlJugador.innerHTML = "¡Lo has clavado!¡Enhorabuena!"
+    ganarPartida();
   }
+
+  if (puntos > 7.5) {
+    perderPartida();
+  }
+}
+
+function ganarPartida () {
+  if (mensajeAlJugador !== undefined && 
+    mensajeAlJugador !== null &&
+    mensajeAlJugador instanceof HTMLParagraphElement) {
+      mensajeAlJugador.innerHTML = "¡Lo has clavado! ¡Enhorabuena!"
+    }
+  deshabilitarBotonesAlGanarPartida ();
+}
+
+function deshabilitarBotonesAlGanarPartida () {
   const elementoBotonPedirCarta = document.getElementById("boton-pedir-carta");
   if (elementoBotonPedirCarta !== null && 
     elementoBotonPedirCarta !== undefined && 
     elementoBotonPedirCarta instanceof HTMLButtonElement) {
-    elementoBotonPedirCarta.disabled = true
-  }
-    
+      elementoBotonPedirCarta.disabled = true;
+    }
   const elementoBotonPlantarse = document.getElementById("boton-plantarse");
   if (elementoBotonPlantarse !== null && elementoBotonPlantarse !== undefined && elementoBotonPlantarse instanceof HTMLButtonElement) {
-    elementoBotonPlantarse.disabled = true
-  }
+    elementoBotonPlantarse.disabled = true;
   }
 }
 
 function perderPartida () {
-  if (puntos > 7.5) {
-    if (mensajeAlJugador != undefined && 
-      mensajeAlJugador != null &&
-      mensajeAlJugador instanceof HTMLParagraphElement) {
+  if (mensajeAlJugador !== undefined && 
+    mensajeAlJugador !== null &&
+    mensajeAlJugador instanceof HTMLParagraphElement) {
       mensajeAlJugador.innerHTML = "GameOver";
-  }
+    }
+  deshabilitarBotonesAlPerderPartida ();
+}
+
+function deshabilitarBotonesAlPerderPartida () {
   const elementoBotonPedirCarta = document.getElementById("boton-pedir-carta");
   if (elementoBotonPedirCarta !== null && 
     elementoBotonPedirCarta !== undefined && elementoBotonPedirCarta instanceof HTMLButtonElement) {
-    elementoBotonPedirCarta.disabled = true
-  }
+      elementoBotonPedirCarta.disabled = true;
+    }
   const elementoBotonPlantarse = document.getElementById("boton-plantarse");
   if (elementoBotonPlantarse !== null && 
     elementoBotonPlantarse !== undefined && 
     elementoBotonPlantarse instanceof HTMLButtonElement) {
-    elementoBotonPlantarse.disabled = true
-  }
-  }
+      elementoBotonPlantarse.disabled = true;
+    }
 }
 
 function plantarse () {
   if (puntos <= 4.5) {
-    if(mensajeAlJugador !== undefined &&
-      mensajeAlJugador !== null &&
-      mensajeAlJugador instanceof HTMLParagraphElement){
-      mensajeAlJugador.innerHTML = "Has sido muy conservador";
-      }
+    mostrarMensajePlantarse("Has sido muy conservador");
   }
   if (puntos === 5 || puntos === 5.5) {
-    if(mensajeAlJugador !== undefined &&
-      mensajeAlJugador !== null &&
-      mensajeAlJugador instanceof HTMLParagraphElement){
-      mensajeAlJugador.innerHTML = "Te ha entrado el canguelo ¿eh?";
-      }
+    mostrarMensajePlantarse("Te ha entrado el canguelo ¿eh?");
   }
   if (puntos === 6 || puntos === 6.5 || puntos === 7) {
-    if(mensajeAlJugador !== undefined &&
-      mensajeAlJugador !== null &&
-      mensajeAlJugador instanceof HTMLParagraphElement){
-        mensajeAlJugador.innerHTML = "Casi casi...";
-      }
+    mostrarMensajePlantarse("Casi casi...");
   }
+  deshabilitarBotonesAlPlantarse ();
+}
+
+function mostrarMensajePlantarse (mensaje: string) {
+  if(mensajeAlJugador !== undefined &&
+    mensajeAlJugador !== null &&
+    mensajeAlJugador instanceof HTMLParagraphElement){
+      mensajeAlJugador.innerHTML = mensaje;
+    }
+}
+
+function deshabilitarBotonesAlPlantarse () {
   const elementoBotonPedirCarta = document.getElementById("boton-pedir-carta");
   if (elementoBotonPedirCarta !== null && 
     elementoBotonPedirCarta !== undefined && 
     elementoBotonPedirCarta instanceof HTMLButtonElement) {
-    elementoBotonPedirCarta.disabled = true
-  };
+      elementoBotonPedirCarta.disabled = true;
+    }
   const elementoBotonQuePasaria = document.getElementById("boton-que-pasaria");
   if (elementoBotonQuePasaria !== null && 
     elementoBotonQuePasaria !== undefined && 
     elementoBotonQuePasaria instanceof HTMLButtonElement) {
-    elementoBotonQuePasaria.style.display = 'block';
-  }
+      elementoBotonQuePasaria.style.display = 'block';
+    }
+  if (botonPlantarse !== null &&
+    botonPlantarse !== undefined &&
+    botonPlantarse instanceof HTMLButtonElement) {
+      botonPlantarse.disabled = true;
+    }
 }
 
 const botonPlantarse = document.getElementById("boton-plantarse");
 if (botonPlantarse !== null && 
   botonPlantarse !== undefined && 
   botonPlantarse instanceof HTMLButtonElement) {
-  botonPlantarse.addEventListener("click", plantarse);
+    botonPlantarse.addEventListener("click", plantarse);
   }
 
 function quePasaria () {
-  procesoJuego()
-  if(mensajeAlJugador != undefined &&
+  procesoJuego();
+  if(mensajeAlJugador !== undefined &&
     mensajeAlJugador !== null &&
     mensajeAlJugador instanceof HTMLParagraphElement){
-    mensajeAlJugador.innerHTML = "Esto habría pasado..."
+      mensajeAlJugador.innerHTML = "Esto habría pasado...";
     }
 }
 
@@ -181,8 +202,8 @@ const botonQuePasaria = document.getElementById("boton-que-pasaria");
 if (botonQuePasaria !== null && 
   botonQuePasaria !== undefined && 
   botonQuePasaria instanceof HTMLButtonElement) {
-botonQuePasaria.addEventListener("click", quePasaria);
-}
+    botonQuePasaria.addEventListener("click", quePasaria);
+  }
 
 function reinicioPartida () {
   puntos = 0;
@@ -199,7 +220,7 @@ function reinicioPartida () {
   if(mensajeAlJugador !== undefined &&
     mensajeAlJugador !== null &&
     mensajeAlJugador instanceof HTMLParagraphElement){
-    mensajeAlJugador.innerHTML = ""
+    mensajeAlJugador.innerHTML = "";
   }
   const elementoBotonPedirCarta = document.getElementById("boton-pedir-carta");
   if (elementoBotonPedirCarta !== null && 
@@ -235,15 +256,16 @@ function procesoJuego () {
   let tipoCarta = pintaCarta(numeroRandom);
   muestraCarta(tipoCarta);
   let puntosCarta = obtenerPuntosCarta(numeroRandom);
-  sumarPuntuacion(puntosCarta);
+  let puntosSumados = sumarPuntuacion(puntosCarta);
+  setPuntos(puntosSumados);
   mostrarPuntuacion();
-  ganarPartida();
-  perderPartida();
+  gestionarFinalPartida ();
 }
+
 
 const botonPedirCarta = document.getElementById("boton-pedir-carta");
 if (botonPedirCarta !== null && 
   botonPedirCarta !== undefined && 
   botonPedirCarta instanceof HTMLButtonElement) {
-botonPedirCarta.addEventListener("click", procesoJuego);
-}
+    botonPedirCarta.addEventListener("click", procesoJuego);
+  }
